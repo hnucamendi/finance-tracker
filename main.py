@@ -60,16 +60,15 @@ def addTotal(data):
 
 def loadFile(file, cfg):
     transactions = []
-    ignore = ["Date", "Description", "Amount",
-              "Running Bal.""Trans. Date", "Post Date", "Category"]
-    sheet = ""
+    wksName = ""
     with open(file, mode='r') as csv_file:
+        if cfg == "bofa":
+            for _ in range(7):
+                next(csv_file)
         next(csv_file)
         csv_reader = csv.reader(csv_file)
-        # if cfg == bofa:
-        #     csv_reader
         for row in csv_reader:
-            sheet = re.search("\d{4}", row[0]).group(0)
+            wksName = re.search("\d{4}", row[0]).group(0)
             date = row[0]
             name = row[2]
             amount = float(row[3])
@@ -77,7 +76,7 @@ def loadFile(file, cfg):
             rounded = addTotal(float(row[3]))
             transaction = ((date, name, amount, category, rounded))
             transactions.append(transaction)
-        return transactions, sheet
+        return transactions, wksName
 
 
 for file in pendingFiles:
@@ -86,22 +85,30 @@ for file in pendingFiles:
     discover = re.search(".*Discover(.+).csv", file)
 
     if discover:
-        rows, sheet = loadFile(file, "discover")
+        rows, wksName = loadFile(file, "discover")
+        wks = sheet.worksheet(wksName)
         for row in rows:
             # print([row[0], row[1], row[2], row[4], row[3]], 2)
-            print(sheet)
-            # sheet.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+            wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
             time.sleep(2)
         time.sleep(1)
-        # os.remove(file)
+        os.remove(file)
     elif apple:
+        # rows, wksName = loadFile(file, "apple")
+        # for row in rows:
+        #     # print([row[0], row[1], row[2], row[4], row[3]], 2)
+        #     wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+        #     time.sleep(2)
         time.sleep(1)
-        # loadFile(file, "apple")
         # os.remove(file)
     elif bofa:
+        rows, wksName = loadFile(file, "bofa")
+        for row in rows:
+            # print([row[0], row[1], row[2], row[4], row[3]], 2)
+            wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+            time.sleep(2)
         time.sleep(1)
-        # loadFile(file, "bofa")
-        # os.remove(file)
+        os.remove(file)
     else:
-        time.sleep(2)
-        # os.remove(file)
+        time.sleep(1)
+        os.remove(file)
