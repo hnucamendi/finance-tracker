@@ -88,27 +88,26 @@ for file in pendingFiles:
         rows, wksName = loadFile(file, "discover")
         wks = sheet.worksheet(wksName)
         for row in rows:
-            # print([row[0], row[1], row[2], row[4], row[3]], 2)
-            wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+            print([row[0], row[1], row[2], row[4], row[3]], 2)
+            # wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
             time.sleep(2)
         time.sleep(1)
-        os.remove(file)
+        # os.remove(file)
     elif apple:
-        # rows, wksName = loadFile(file, "apple")
-        # for row in rows:
-        #     # print([row[0], row[1], row[2], row[4], row[3]], 2)
-        #     wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
-        #     time.sleep(2)
+        rows, wksName = loadFile(file, "apple")
+        for row in rows:
+            print([row[0], row[1], row[2], row[4], row[3]], 2)
+            # wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+            time.sleep(2)
         time.sleep(1)
         # os.remove(file)
     elif bofa:
         rows, wksName = loadFile(file, "bofa")
         for row in rows:
-            # print([row[0], row[1], row[2], row[4], row[3]], 2)
-            wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+            print([row[0], row[1], row[2], row[4], row[3]], 2)
+            # wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
             time.sleep(2)
         time.sleep(1)
-        os.remove(file)
+        # os.remove(file)
     else:
-        time.sleep(1)
         os.remove(file)
