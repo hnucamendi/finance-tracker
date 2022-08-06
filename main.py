@@ -5,49 +5,10 @@ import re
 import glob
 import os
 
-# TODO:
-# Make file selection possible based on Bank
-# Make iteration for each file
-# should be able to fill multiple files into sheets and seperate by year
-
-# 07/21/2022
-
-# file = "test-data.csv"
-
-# import glob
-# files = glob.glob("*.txt")           # get all the .txt files
-
-# for file in files:                   # iterate over the list of files
-#     with open(file, "r") as fin:     # open the file
-#         # rest of the code
-
-
-# import os
-# arr = os.listdir()
-# files = [x for x in arr if x.endswith('.txt')]
-
-# for file in files:                   # iterate over the list of files
-#     with open(file, "r") as fin:     # open the file
-#        # rest of the code
-
-# './test-data\\Apple Card Transactions - May 2022.csv'
-# './test-data\\stmt(19).csv'
-# './test-data\\Discover-Statement-20222307.csv'
-
 acc = gspread.service_account()
 sheet = acc.open("personal-finances")
 pendingFiles = glob.glob("./test-data/*.csv")
 
-
-# def loadFile(file, cfg):
-#     if sheet.worksheet("sldfj"):
-#         print(0)
-#     if cfg == "discover":
-#         sheet.worksheet("Sheet1")
-#     if cfg == "apple":
-#         print(0)
-#     if cfg == "bofa":
-#         print(0)
 
 def addTotal(data):
     data = round(data)
@@ -58,23 +19,36 @@ def addTotal(data):
     return sum
 
 
+def stringToFloat(numString):
+    if re.search("-\d*", numString):
+        numString = re.sub(r'.', '', numString, count=1)
+    if re.search(".*,\d*", numString):
+        numString = re.sub(r",", "", numString)
+    if not re.search("[.]\d{1,2}", numString):
+        numString += ".00"
+    return numString
+
+
 def loadFile(file, cfg):
     transactions = []
     wksName = ""
     with open(file, mode='r') as csv_file:
-        if cfg == "bofa":
+        if cfg["cfg"] == "bofa":
             for _ in range(7):
                 next(csv_file)
         next(csv_file)
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
             wksName = re.search("\d{4}", row[0]).group(0)
-            date = row[0]
-            name = row[2]
-            amount = float(row[3])
-            category = row[4]
-            rounded = addTotal(float(row[3]))
-            transaction = ((date, name, amount, category, rounded))
+            date = row[cfg["date"]]
+            name = row[cfg["name"]]
+            if cfg["cfg"] == "bofa":
+                row[cfg["amount"]] = stringToFloat(row[cfg["amount"]])
+            amount = float(row[cfg["amount"]])
+            category = row[cfg["category"]]
+            rounded = addTotal(float(row[cfg["amount"]]))
+            bank = cfg["cfg"]
+            transaction = ((date, name, amount, category, rounded, bank))
             transactions.append(transaction)
         return transactions, wksName
 
@@ -85,29 +59,37 @@ for file in pendingFiles:
     discover = re.search(".*Discover(.+).csv", file)
 
     if discover:
-        rows, wksName = loadFile(file, "discover")
-        wks = sheet.worksheet(wksName)
+        wks = any
+        rows, wksName = loadFile(
+            file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
         for row in rows:
-            print([row[0], row[1], row[2], row[4], row[3]], 2)
-            # wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+            wks = sheet.worksheet(wksName)
+            # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            wks.insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        time.sleep(1)
-        # os.remove(file)
+        # time.sleep(1)
+        os.remove(file)
     elif apple:
-        rows, wksName = loadFile(file, "apple")
+        rows, wksName = loadFile(
+            file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
+        wks = any
         for row in rows:
-            print([row[0], row[1], row[2], row[4], row[3]], 2)
-            # wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+            wks = sheet.worksheet(wksName)
+            # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            wks.insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        time.sleep(1)
-        # os.remove(file)
+        # time.sleep(1)
+        os.remove(file)
     elif bofa:
-        rows, wksName = loadFile(file, "bofa")
+        rows, wksName = loadFile(
+            file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
+        wks = any
         for row in rows:
-            print([row[0], row[1], row[2], row[4], row[3]], 2)
-            # wks.insert_row([row[0], row[1], row[2], row[4], row[3]], 2)
+            wks = sheet.worksheet(wksName)
+            # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            wks.insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        time.sleep(1)
-        # os.remove(file)
+        # time.sleep(1)
+        os.remove(file)
     else:
         os.remove(file)
