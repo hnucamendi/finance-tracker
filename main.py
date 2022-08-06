@@ -9,12 +9,13 @@ import os
 # - Parse Data and organize by month
 
 acc = gspread.service_account()
-# sheet = acc.open("personal-finances")
-# pendingFiles = glob.glob("./finance/*.csv")
+
+sheet = acc.open("personal-finances")
+pendingFiles = glob.glob("./finance/*.csv")
 
 # Testing
-sheet = acc.open("personal-finances-test")
-pendingFiles = glob.glob("./test-data/*.csv")
+# sheet = acc.open("personal-finances-test")
+# pendingFiles = glob.glob("./test-data/*.csv")
 
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -65,7 +66,13 @@ def textDate(dateString):
             month = months[11]
     return month
 
-def removePayments(floatNum):
+def removePayments(floatNum, bank):
+    if bank == "bofa" and floatNum < 0:
+        floatNum *= -1
+        return floatNum
+    elif bank == "bofa" and floatNum > 0:
+        return 0
+
     if floatNum < 0:
         return 0
     return floatNum
@@ -75,9 +82,6 @@ def loadFile(file, cfg):
     transactions = []
     wksName = ""
     with open(file, mode='r') as csv_file:
-        if cfg["cfg"] == "bofa":
-            for _ in range(7):
-                next(csv_file)
         next(csv_file)
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
@@ -87,7 +91,7 @@ def loadFile(file, cfg):
             name = row[cfg["name"]]
             if cfg["cfg"] == "bofa":
                 row[cfg["amount"]] = stringToFloat(row[cfg["amount"]])
-            amount = removePayments(float(row[cfg["amount"]]))
+            amount = removePayments(float(row[cfg["amount"]]), cfg["cfg"])
             category = row[cfg["category"]]
             rounded = addTotal(float(row[cfg["amount"]]))
             bank = cfg["cfg"]
@@ -108,6 +112,7 @@ for file in pendingFiles:
     apple = re.search(".*Apple(.+).csv", file)
     discover = re.search(".*Discover(.+).csv", file)
 
+
     if discover:
         rows = loadFile(file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
         loadCSV(rows, {"txtDate": 0, "date": 1, "name": 2, "amount": 3, "rAmount": 4, "category": 5, "cfg": 6})
@@ -117,7 +122,7 @@ for file in pendingFiles:
         loadCSV(rows)
         os.remove(file)
     elif bofa:
-        rows = loadFile(file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
+        rows = loadFile(file, {"category": 1, "amount": 4, "name": 2, "date": 0, "cfg": "bofa"})
         loadCSV(rows)
         os.remove(file)
     else:
