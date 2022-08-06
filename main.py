@@ -94,7 +94,7 @@ def loadFile(file, cfg):
 def loadCSV(rows, cfg={"txtDate": 0, "date": 1, "name": 2, "amount": 3, "category": 5, "rAmount": 4, "cfg": 6}):
     for row in rows:
         # print([row[cfg["txtDate"]], row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
-        row[7].insert_row([row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
+        row[7].insert_row([row[cfg["txtDate"]], row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
         time.sleep(2)
 
 
