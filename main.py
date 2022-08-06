@@ -65,6 +65,11 @@ def textDate(dateString):
             month = months[11]
     return month
 
+def removePayments(floatNum):
+    if floatNum < 0:
+        return 0
+    return floatNum
+
 
 def loadFile(file, cfg):
     transactions = []
@@ -82,7 +87,7 @@ def loadFile(file, cfg):
             name = row[cfg["name"]]
             if cfg["cfg"] == "bofa":
                 row[cfg["amount"]] = stringToFloat(row[cfg["amount"]])
-            amount = float(row[cfg["amount"]])
+            amount = removePayments(float(row[cfg["amount"]]))
             category = row[cfg["category"]]
             rounded = addTotal(float(row[cfg["amount"]]))
             bank = cfg["cfg"]
@@ -99,13 +104,13 @@ def loadCSV(rows, cfg={"txtDate": 0, "date": 1, "name": 2, "amount": 3, "categor
 
 
 for file in pendingFiles:
-    bofa = re.search(".*stmt(.+).csv", file)
+    bofa = re.search("(.+)_4764.csv", file)
     apple = re.search(".*Apple(.+).csv", file)
     discover = re.search(".*Discover(.+).csv", file)
 
     if discover:
         rows = loadFile(file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
-        loadCSV(rows, {"txtDate": 0,"date": 1, "name": 2, "amount": 3, "category": 4, "rAmount": 5, "cfg": 6})
+        loadCSV(rows, {"txtDate": 0, "date": 1, "name": 2, "amount": 3, "rAmount": 4, "category": 5, "cfg": 6})
         os.remove(file)
     elif apple:
         rows = loadFile(file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
