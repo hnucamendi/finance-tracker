@@ -1,3 +1,4 @@
+from traceback import print_list
 import gspread
 import csv
 import time
@@ -73,6 +74,14 @@ def loadFile(file, cfg):
         return transactions
 
 
+def loadCSV(rows, cfg={"date": 0, "name": 1, "amount": 2, "category": 4, "rAmount": 3, "cfg": 5}):
+    for row in rows:
+        # print([row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
+
+        row[6].insert_row([row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
+        time.sleep(2)
+
+
 for file in pendingFiles:
     bofa = re.search(".*stmt(.+).csv", file)
     apple = re.search(".*Apple(.+).csv", file)
@@ -81,30 +90,19 @@ for file in pendingFiles:
     if discover:
         rows = loadFile(
             file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
-        for row in rows:
-            print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            # row[6].insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            # time.sleep(2)
-        time.sleep(1)
-        # # os.remove(file)
+        loadCSV(rows, {"date": 0, "name": 1, "amount": 2,
+                "category": 3, "rAmount": 4, "cfg": 5})
+        os.remove(file)
     elif apple:
         rows = loadFile(
             file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
-        for row in rows:
-            print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            # row[6].insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            # time.sleep(2)
-        time.sleep(1)
-        # os.remove(file)
+        loadCSV(rows)
+        os.remove(file)
     elif bofa:
         rows = loadFile(
             file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
-        for row in rows:
-            print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            # row[6].insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            # time.sleep(2)
-        time.sleep(1)
-        # os.remove(file)
+        loadCSV(rows)
+        os.remove(file)
     else:
-        time.sleep(1)
-        # os.remove(file)
+        # time.sleep(1)
+        os.remove(file)
