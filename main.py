@@ -39,7 +39,7 @@ def loadFile(file, cfg):
         next(csv_file)
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
-            wksName = re.search("\d{4}", row[0]).group(0)
+            wksName = sheet.worksheet(re.search("\d{4}", row[0]).group(0))
             date = row[cfg["date"]]
             name = row[cfg["name"]]
             if cfg["cfg"] == "bofa":
@@ -48,9 +48,10 @@ def loadFile(file, cfg):
             category = row[cfg["category"]]
             rounded = addTotal(float(row[cfg["amount"]]))
             bank = cfg["cfg"]
-            transaction = ((date, name, amount, category, rounded, bank))
+            transaction = (
+                (date, name, amount, category, rounded, bank, wksName))
             transactions.append(transaction)
-        return transactions, wksName
+        return transactions
 
 
 for file in pendingFiles:
@@ -59,37 +60,34 @@ for file in pendingFiles:
     discover = re.search(".*Discover(.+).csv", file)
 
     if discover:
-        wks = any
-        rows, wksName = loadFile(
+        rows = loadFile(
             file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
         for row in rows:
-            wks = sheet.worksheet(wksName)
             # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            wks.insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            row[6].insert_row(
+                [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        # time.sleep(1)
-        os.remove(file)
+        time.sleep(1)
+        # os.remove(file)
     elif apple:
-        rows, wksName = loadFile(
+        rows = loadFile(
             file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
-        wks = any
         for row in rows:
-            wks = sheet.worksheet(wksName)
             # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            wks.insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            row[6].insert_row(
+                [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        # time.sleep(1)
-        os.remove(file)
+        time.sleep(1)
+        # os.remove(file)
     elif bofa:
-        rows, wksName = loadFile(
+        rows = loadFile(
             file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
-        wks = any
         for row in rows:
-            wks = sheet.worksheet(wksName)
             # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            wks.insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            row[6].insert_row(
+                [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        # time.sleep(1)
-        os.remove(file)
+        time.sleep(1)
+        # os.remove(file)
     else:
         os.remove(file)
