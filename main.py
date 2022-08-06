@@ -8,12 +8,12 @@ import os
 # TODO:
 # - Parse Data and organize by month
 
-# acc = gspread.service_account()
+acc = gspread.service_account()
 # sheet = acc.open("personal-finances")
 # pendingFiles = glob.glob("./finance/*.csv")
 
 # Testing
-# sheet = acc.open("personal-finances-test")
+sheet = acc.open("personal-finances-test")
 pendingFiles = glob.glob("./test-data/*.csv")
 
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -76,7 +76,7 @@ def loadFile(file, cfg):
         next(csv_file)
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
-            # wksName = sheet.worksheet(re.search("\d{4}", row[0]).group(0))
+            wksName = sheet.worksheet(re.search("\d{4}", row[0]).group(0))
             date = row[cfg["date"]]
             txtDate = textDate(row[cfg["date"]])
             name = row[cfg["name"]]
@@ -88,17 +88,14 @@ def loadFile(file, cfg):
             bank = cfg["cfg"]
             transaction = ((txtDate, date, name, amount, category, rounded, bank, wksName))
             transactions.append(transaction)
-        parsedTransactions = parseDataMonthly(transactions,txtDate, date)
-        return transactions, parsedTransactions
+        return transactions
 
 
 def loadCSV(rows, cfg={"txtDate": 0, "date": 1, "name": 2, "amount": 3, "category": 5, "rAmount": 4, "cfg": 6}):
     for row in rows:
         # print([row[cfg["txtDate"]], row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
-
-        # row[7].insert_row([row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
-        time.sleep(.01)
-        # time.sleep(2)
+        row[7].insert_row([row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
+        time.sleep(2)
 
 
 for file in pendingFiles:
@@ -109,16 +106,15 @@ for file in pendingFiles:
     if discover:
         rows = loadFile(file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
         loadCSV(rows, {"txtDate": 0,"date": 1, "name": 2, "amount": 3, "category": 4, "rAmount": 5, "cfg": 6})
-        # os.remove(file)
+        os.remove(file)
     elif apple:
         rows = loadFile(file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
         loadCSV(rows)
-        # os.remove(file)
+        os.remove(file)
     elif bofa:
-        rows = loadFile(
-            file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
+        rows = loadFile(file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
         loadCSV(rows)
-        # os.remove(file)
+        os.remove(file)
     else:
-        time.sleep(1)
-        # os.remove(file)
+        # time.sleep(1)
+        os.remove(file)
