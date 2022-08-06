@@ -6,7 +6,11 @@ import glob
 import os
 
 acc = gspread.service_account()
-sheet = acc.open("personal-finances")
+# sheet = acc.open("personal-finances")
+# pendingFiles = glob.glob("./finance/*.csv")
+
+# Testing
+sheet = acc.open("personal-finances-test")
 pendingFiles = glob.glob("./test-data/*.csv")
 
 
@@ -20,8 +24,6 @@ def addTotal(data):
 
 
 def stringToFloat(numString):
-    if re.search("-\d*", numString):
-        numString = re.sub(r'.', '', numString, count=1)
     if re.search(".*,\d*", numString):
         numString = re.sub(r",", "", numString)
     if not re.search("[.]\d{1,2}", numString):
@@ -67,8 +69,7 @@ for file in pendingFiles:
             row[6].insert_row(
                 [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        time.sleep(1)
-        # os.remove(file)
+        os.remove(file)
     elif apple:
         rows = loadFile(
             file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
@@ -77,8 +78,7 @@ for file in pendingFiles:
             row[6].insert_row(
                 [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        time.sleep(1)
-        # os.remove(file)
+        os.remove(file)
     elif bofa:
         rows = loadFile(
             file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
@@ -87,7 +87,6 @@ for file in pendingFiles:
             row[6].insert_row(
                 [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
             time.sleep(2)
-        time.sleep(1)
-        # os.remove(file)
+        os.remove(file)
     else:
         os.remove(file)
