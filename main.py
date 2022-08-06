@@ -17,8 +17,7 @@ import os
 # sheet = acc.open("personal-finances-test")
 pendingFiles = glob.glob("./test-data/*.csv")
 
-months = ["January", "February", "March", "April", "May", "June", "July",
-          "August", "September", "October", "November", "December"]
+months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 
 def addTotal(data):
@@ -81,7 +80,6 @@ def loadFile(file, cfg):
             # wksName = sheet.worksheet(re.search("\d{4}", row[0]).group(0))
             date = row[cfg["date"]]
             txtDate = textDate(row[cfg["date"]])
-            # print(txtDate)
             name = row[cfg["name"]]
             if cfg["cfg"] == "bofa":
                 row[cfg["amount"]] = stringToFloat(row[cfg["amount"]])
@@ -89,15 +87,14 @@ def loadFile(file, cfg):
             category = row[cfg["category"]]
             rounded = addTotal(float(row[cfg["amount"]]))
             bank = cfg["cfg"]
-            transaction = (
-                (txtDate, date, name, amount, category, rounded, bank, wksName))
+            transaction = ((txtDate, date, name, amount, category, rounded, bank, wksName))
             transactions.append(transaction)
         return transactions
 
 
 def loadCSV(rows, cfg={"txtDate": 0, "date": 1, "name": 2, "amount": 3, "category": 5, "rAmount": 4, "cfg": 6}):
     for row in rows:
-        print([row[cfg["txtDate"]], row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
+        # print([row[cfg["txtDate"]], row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
 
         # row[7].insert_row([row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
         time.sleep(.01)
