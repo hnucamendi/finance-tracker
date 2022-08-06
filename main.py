@@ -47,6 +47,58 @@ def textDate(dateString):
     time.sleep(.01)
     # print(dateString)
 
+def parseDataMonthly(list, monthString, monthInt):
+    # print(list)
+    # print(monthString)
+    month = []
+    # for row in list:
+    #     print("row")
+    #     print(row)
+    #     print("montString")
+    #     print(monthString)
+    #     if row[0] == monthString:
+    #         month.append(row)
+    # print(month)
+    for i in range(len(list)):
+        # print(list[i][0])
+        match list[i][0]:
+            case "January":
+                month = list
+                print(month)
+            case "February":
+                month = list
+                print(month)
+            case "March":
+                month = list
+                print(month)
+            case "April":
+                month = list
+                print(month)
+            case "May":
+                month = list
+                print(month)
+            case "June":
+                month = list
+                print(month)
+            case "July":
+                month = list
+                print(month)
+            case "August":
+                month = list
+                print(month)
+            case "September":
+                month = list
+                print(month)
+            case "October":
+                month = list
+                print(month)
+            case "November":
+                month = list
+                print(month)
+            case "December":
+                month = list
+                print(month)
+
 
 def loadFile(file, cfg):
     transactions = []
@@ -71,7 +123,8 @@ def loadFile(file, cfg):
             transaction = (
                 (date, name, amount, category, rounded, bank, wksName))
             transactions.append(transaction)
-        return transactions
+        parsedTransactions = parseDataMonthly(transactions,txtDate, date)
+        return transactions, parsedTransactions
 
 
 def loadCSV(rows, cfg={"date": 0, "name": 1, "amount": 2, "category": 4, "rAmount": 3, "cfg": 5}):
@@ -88,6 +141,7 @@ for file in pendingFiles:
     discover = re.search(".*Discover(.+).csv", file)
 
     if discover:
+<<<<<<< Updated upstream
         rows = loadFile(
             file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
         loadCSV(rows, {"date": 0, "name": 1, "amount": 2,
@@ -96,10 +150,17 @@ for file in pendingFiles:
     elif apple:
         rows = loadFile(
             file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
+=======
+        rows, monthly = loadFile(file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
+        loadCSV(rows, {"txtDate": 0,"date": 1, "name": 2, "amount": 3, "category": 4, "rAmount": 5, "cfg": 6})
+        # os.remove(file)
+    elif apple:
+        rows, monthly = loadFile(file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
+>>>>>>> Stashed changes
         loadCSV(rows)
         os.remove(file)
     elif bofa:
-        rows = loadFile(
+        rows, monthly = loadFile(
             file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
         loadCSV(rows)
         os.remove(file)
