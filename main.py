@@ -99,6 +99,58 @@ def parseDataMonthly(list, monthString, monthInt):
                 month = list
                 print(month)
 
+def parseDataMonthly(list, monthString, monthInt):
+    # print(list)
+    # print(monthString)
+    month = []
+    # for row in list:
+    #     print("row")
+    #     print(row)
+    #     print("montString")
+    #     print(monthString)
+    #     if row[0] == monthString:
+    #         month.append(row)
+    # print(month)
+    for i in range(len(list)):
+        # print(list[i][0])
+        match list[i][0]:
+            case "January":
+                month = list
+                print(month)
+            case "February":
+                month = list
+                print(month)
+            case "March":
+                month = list
+                print(month)
+            case "April":
+                month = list
+                print(month)
+            case "May":
+                month = list
+                print(month)
+            case "June":
+                month = list
+                print(month)
+            case "July":
+                month = list
+                print(month)
+            case "August":
+                month = list
+                print(month)
+            case "September":
+                month = list
+                print(month)
+            case "October":
+                month = list
+                print(month)
+            case "November":
+                month = list
+                print(month)
+            case "December":
+                month = list
+                print(month)
+
 
 def loadFile(file, cfg):
     transactions = []
