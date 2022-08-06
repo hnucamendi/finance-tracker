@@ -141,7 +141,6 @@ for file in pendingFiles:
     discover = re.search(".*Discover(.+).csv", file)
 
     if discover:
-<<<<<<< Updated upstream
         rows = loadFile(
             file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
         loadCSV(rows, {"date": 0, "name": 1, "amount": 2,
@@ -150,13 +149,11 @@ for file in pendingFiles:
     elif apple:
         rows = loadFile(
             file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
-=======
         rows, monthly = loadFile(file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
         loadCSV(rows, {"txtDate": 0,"date": 1, "name": 2, "amount": 3, "category": 4, "rAmount": 5, "cfg": 6})
         # os.remove(file)
     elif apple:
         rows, monthly = loadFile(file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
->>>>>>> Stashed changes
         loadCSV(rows)
         os.remove(file)
     elif bofa:
