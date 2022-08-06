@@ -67,57 +67,86 @@ def textDate(dateString):
     return month
 
 def parseDataMonthly(list, monthString, monthInt):
-    # print(list)
-    # print(monthString)
-    month = []
-    # for row in list:
-    #     print("row")
-    #     print(row)
-    #     print("montString")
-    #     print(monthString)
-    #     if row[0] == monthString:
-    #         month.append(row)
-    # print(month)
+    month1 = []
+    month2 = []
+    month3 = []
+    month4 = []
+    month5 = []
+    month6 = []
+    month7 = []
+    month8 = []
+    month9 = []
+    month10 = []
+    month11 = []
+    month12 = []
+    print("LIST1")
+    print(list)
+    print("LIST1")
     for i in range(len(list)):
         # print(list[i][0])
         match list[i][0]:
             case "January":
-                month = list
-                print(month)
+                month1.append(list[i])
+                list=month1
+                # print(month)
+                break
             case "February":
-                month = list
-                print(month)
+                month2.append(list[i])
+                list=month2
+                # print(month)
+                break
             case "March":
-                month = list
-                print(month)
+                month3.append(list[i])
+                list=month3
+                # print(month)
+                break
             case "April":
-                month = list
-                print(month)
+                month4.append(list[i])
+                list=month4
+                # print(month)
+                break
             case "May":
-                month = list
-                print(month)
+                month5.append(list[i])
+                list=month5
+                # print(month)
+                break
             case "June":
-                month = list
-                print(month)
+                month6.append(list[i])
+                list=month6
+                # print(month)
+                break
             case "July":
-                month = list
-                print(month)
+                month7.append(list[i])
+                list=month7
+                # print(month)
+                break
             case "August":
-                month = list
-                print(month)
+                month8.append(list[i])
+                list=month8
+                # print(month)
+                break
             case "September":
-                month = list
-                print(month)
+                month9.append(list[i])
+                list=month9
+                # print(month)
+                break
             case "October":
-                month = list
-                print(month)
+                month10.append(list[i])
+                list=month10
+                # print(month)
+                break
             case "November":
-                month = list
-                print(month)
+                month11.append(list[i])
+                list=month11
+                # print(month)
+                break
             case "December":
-                month = list
-                print(month)
-
+                month12.append(list[i])
+                list=month12
+                break
+    print("LIST2")
+    print(list)
+    print("LIST2")
 
 def loadFile(file, cfg):
     transactions = []
