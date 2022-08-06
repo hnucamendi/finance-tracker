@@ -1,4 +1,3 @@
-from traceback import print_list
 import gspread
 import csv
 import time
@@ -89,7 +88,8 @@ def loadFile(file, cfg):
             bank = cfg["cfg"]
             transaction = ((txtDate, date, name, amount, category, rounded, bank, wksName))
             transactions.append(transaction)
-        return transactions
+        parsedTransactions = parseDataMonthly(transactions,txtDate, date)
+        return transactions, parsedTransactions
 
 
 def loadCSV(rows, cfg={"txtDate": 0, "date": 1, "name": 2, "amount": 3, "category": 5, "rAmount": 4, "cfg": 6}):
