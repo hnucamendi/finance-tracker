@@ -5,6 +5,9 @@ import re
 import glob
 import os
 
+# TODO:
+# - Parse Data and organize by month
+
 acc = gspread.service_account()
 # sheet = acc.open("personal-finances")
 # pendingFiles = glob.glob("./finance/*.csv")
@@ -12,6 +15,9 @@ acc = gspread.service_account()
 # Testing
 sheet = acc.open("personal-finances-test")
 pendingFiles = glob.glob("./test-data/*.csv")
+
+months = ["January", "February", "March", "April", "May", "June", "July",
+          "August", "September", "October", "November", "December"]
 
 
 def addTotal(data):
@@ -31,6 +37,16 @@ def stringToFloat(numString):
     return numString
 
 
+def textDate(dateString):
+    #     # "01/21/2122"
+    #     for i in range(len(months)):
+    #         match dateString:
+    #             case i:
+    #                 return months[i]
+    time.sleep(.01)
+    # print(dateString)
+
+
 def loadFile(file, cfg):
     transactions = []
     wksName = ""
@@ -43,6 +59,7 @@ def loadFile(file, cfg):
         for row in csv_reader:
             wksName = sheet.worksheet(re.search("\d{4}", row[0]).group(0))
             date = row[cfg["date"]]
+            # txtDate = textDate(row[cfg["date"]])
             name = row[cfg["name"]]
             if cfg["cfg"] == "bofa":
                 row[cfg["amount"]] = stringToFloat(row[cfg["amount"]])
@@ -65,28 +82,29 @@ for file in pendingFiles:
         rows = loadFile(
             file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
         for row in rows:
-            # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            row[6].insert_row(
-                [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            time.sleep(2)
-        os.remove(file)
+            print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            # row[6].insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            # time.sleep(2)
+        time.sleep(1)
+        # # os.remove(file)
     elif apple:
         rows = loadFile(
             file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
         for row in rows:
-            # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            row[6].insert_row(
-                [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            time.sleep(2)
-        os.remove(file)
+            print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            # row[6].insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            # time.sleep(2)
+        time.sleep(1)
+        # os.remove(file)
     elif bofa:
         rows = loadFile(
             file, {"category": 0, "amount": 2, "name": 1, "date": 0, "cfg": "bofa"})
         for row in rows:
-            # print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            row[6].insert_row(
-                [row[0], row[1], row[2], row[4], row[3], row[5]], 2)
-            time.sleep(2)
-        os.remove(file)
+            print([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            # row[6].insert_row([row[0], row[1], row[2], row[4], row[3], row[5]], 2)
+            # time.sleep(2)
+        time.sleep(1)
+        # os.remove(file)
     else:
-        os.remove(file)
+        time.sleep(1)
+        # os.remove(file)
