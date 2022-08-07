@@ -6,7 +6,7 @@ import glob
 import os
 
 # TODO:
-# - Parse Data and organize by month
+# - Automate getting monthly data
 
 acc = gspread.service_account()
 
@@ -18,6 +18,24 @@ pendingFiles = glob.glob("./finance/*.csv")
 # pendingFiles = glob.glob("./test-data/*.csv")
 
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+def turnToList(strings):
+    arr = []
+    if strings == "" or strings == "all":
+        arr = list(["apple", "discover", "bofa"])
+    elif re.search(".*,\d*", strings):
+        strings = strings.replace(" ", "")
+        arr = list(strings.split(","))
+    elif re.search("[ ]", strings):
+        arr = list(strings.split(" "))
+    elif re.search("-", strings):
+        arr = list(strings.split("-"))
+    elif len(strings) > 0:
+        arr = list()
+        arr.append(strings)
+    else:
+        print(strings + " was not converted to list")
+    defineProcess(arr)
 
 
 def addTotal(data):
@@ -106,25 +124,26 @@ def loadCSV(rows, cfg={"txtDate": 0, "date": 1, "name": 2, "amount": 3, "categor
         row[7].insert_row([row[cfg["txtDate"]], row[cfg["date"]], row[cfg["name"]], row[cfg["amount"]],row[cfg["category"]], row[cfg["rAmount"]], row[cfg["cfg"]]], 2)
         time.sleep(2)
 
+def defineProcess(banks):
+    for file in pendingFiles:
+        for bank in banks:
+            if bank == "bofa":
+                bofa = re.search("(.+)_4764.csv", file)
+                if bofa:
+                    rows = loadFile(file, {"category": 1, "amount": 4, "name": 2, "date": 0, "cfg": "bofa"})
+                    loadCSV(rows)
+                    os.remove(file)
+            if bank == "apple":
+                apple = re.search(".*Apple(.+).csv", file)
+                if apple:
+                    rows = loadFile(file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
+                    loadCSV(rows)
+                    os.remove(file)
+            if bank == "discover":
+                discover = re.search(".*Discover(.+).csv", file)
+                if discover:
+                    rows = loadFile(file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
+                    loadCSV(rows, {"txtDate": 0, "date": 1, "name": 2, "amount": 3, "rAmount": 4, "category": 5, "cfg": 6})
+                    os.remove(file)
 
-for file in pendingFiles:
-    bofa = re.search("(.+)_4764.csv", file)
-    apple = re.search(".*Apple(.+).csv", file)
-    discover = re.search(".*Discover(.+).csv", file)
-
-
-    if discover:
-        rows = loadFile(file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
-        loadCSV(rows, {"txtDate": 0, "date": 1, "name": 2, "amount": 3, "rAmount": 4, "category": 5, "cfg": 6})
-        os.remove(file)
-    elif apple:
-        rows = loadFile(file, {"category": 4, "amount": 6, "name": 2, "date": 0, "cfg": "apple"})
-        loadCSV(rows)
-        os.remove(file)
-    elif bofa:
-        rows = loadFile(file, {"category": 1, "amount": 4, "name": 2, "date": 0, "cfg": "bofa"})
-        loadCSV(rows)
-        os.remove(file)
-    else:
-        # time.sleep(1)
-        os.remove(file)
+turnToList(input("Enter Config: "))
