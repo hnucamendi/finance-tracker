@@ -147,4 +147,3 @@ def defineProcess(banks):
                     os.remove(file)
 
 turnToList(input("Enter Config: "))
-
