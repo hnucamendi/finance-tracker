@@ -44,6 +44,6 @@ To set up this program you will to set up a couple of things:
 Watch all of the data get parsed into the CSV file that you allowed access to that service account.
 In the future I would like to make this open to more banks and make the setup process a bit easier as well. For now its somewhat complex but its worth it!
 
-## Version 1.0.0
+## Version 1.1.0
 
 - Written in Python
