@@ -91,6 +91,11 @@ def removePayments(floatNum, bank):
     elif bank == "bofa" and floatNum > 0:
         return 0
 
+    if bank == "income" and floatNum < 0:
+        return 0
+    elif bank == "income" and floatNum > 0:
+        return floatNum
+
     if floatNum < 0:
         return 0
     return floatNum
@@ -101,13 +106,20 @@ def loadFile(file, cfg):
     wksName = ""
     with open(file, mode='r') as csv_file:
         next(csv_file)
+        print(cfg["cfg"])
+        if cfg["cfg"] == "income":
+            for _ in range(6):
+                next(csv_file)
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
-            wksName = sheet.worksheet(re.search("\d{4}", row[0]).group(0))
+            if cfg["cfg"] == "income":
+                wksName = sheet.worksheet("income")
+            else:
+                wksName = sheet.worksheet(re.search("\d{4}", row[0]).group(0))
             date = row[cfg["date"]]
             txtDate = textDate(row[cfg["date"]])
             name = row[cfg["name"]]
-            if cfg["cfg"] == "bofa":
+            if cfg["cfg"] == "bofa" or cfg["cfg"] == "income":
                 row[cfg["amount"]] = stringToFloat(row[cfg["amount"]])
             amount = removePayments(float(row[cfg["amount"]]), cfg["cfg"])
             category = row[cfg["category"]]
@@ -145,5 +157,12 @@ def defineProcess(banks):
                     rows = loadFile(file, {"category": 4, "amount": 3, "name": 2, "date": 0, "cfg": "discover"})
                     loadCSV(rows, {"txtDate": 0, "date": 1, "name": 2, "amount": 3, "rAmount": 4, "category": 5, "cfg": 6})
                     os.remove(file)
+            if bank == "income":
+                income = re.search(".*stmt(.+).csv", file)
+                if income:
+                    rows = loadFile(file, {"category": 3, "amount": 2, "name": 1, "date": 0, "cfg": "income"})
+                    loadCSV(rows)
+                    os.remove(file)
 
+print("Available Input: bofa, discover, apple, income, all")
 turnToList(input("Enter Config: "))
