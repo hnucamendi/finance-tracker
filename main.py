@@ -113,7 +113,7 @@ def loadFile(file, cfg):
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
             if cfg["cfg"] == "income":
-                wksName = sheet.worksheet("income")
+                wksName = sheet.worksheet("i" + re.search("\d{4}", row[0]).group(0))
             else:
                 wksName = sheet.worksheet(re.search("\d{4}", row[0]).group(0))
             date = row[cfg["date"]]
